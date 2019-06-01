@@ -1,4 +1,9 @@
-# kimsa-interview
+# Kimsa Interview
+
+Single Page App de consulta API Kimsa Interview.
+Utiliza VueJS y Vuetify.
+Proyecto creado con VueCLI 3.
+Permite filtrado de consulta según documentación en https://app.swaggerhub.com/apis/lincoyan/kimsa-interview-api/1.0.0.
 
 ## Project setup
 ```
@@ -24,6 +29,3 @@ npm run test
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

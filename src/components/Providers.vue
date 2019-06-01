@@ -49,33 +49,38 @@ export default {
   },
   methods: {
     async consultaAPI () {
-      // bool de estado de carga de datos
-      this.cargandoDatos = true
-      // armar url de consulta depenfiendo si debe tener querys añadidas o no
-      // incluye ratings y max de 10 resultados por pagina
-      const url = 'http://18.208.195.101/we-help-api/v1/public/providers?with_ratings=1&per_page=10'
-      let finalURL = ''
-      if (this.query) {
-        finalURL = url + this.query
-      } else {
-        finalURL = url
+      try {
+        // bool de estado de carga de datos
+        this.cargandoDatos = true
+        // armar url de consulta depenfiendo si debe tener querys añadidas o no
+        // incluye ratings y max de 10 resultados por pagina
+        const url = 'http://18.208.195.101/we-help-api/v1/public/providers?with_ratings=1&per_page=10'
+        let finalURL = ''
+        if (this.query) {
+          finalURL = url + this.query
+        } else {
+          finalURL = url
+        }
+        // consumir API
+        const response = await fetch(`${finalURL}&page=${this.paginaActual}`, {method: 'GET'})
+        const data = await response.json()
+        const result = data.result.providers
+        // establecer parametros de lectura = pagina inicial, total de paginas en la b
+        this.paginaActual = result.current_page
+        this.totalPaginas = result.last_page
+        // parametros de visalizacion/paginacion
+        this.to = result.to
+        this.from = result.from
+        this.total = result.total
+        // cargar resulktados y mapear segun perfil
+        this.resultados =  this.mapearDatos(result.data)
+        this.cargandoDatos = false
+        // enviar usuario al top de la muestra de resultados para facilitar revision
+        this.goToTop()
+      } catch (error) {
+        console.log(error)
+        this.cargandoDatos = false
       }
-      // consumir API
-      const response = await fetch(`${finalURL}&page=${this.paginaActual}`, {method: 'GET'})
-      const data = await response.json()
-      const result = data.result.providers
-      // establecer parametros de lectura = pagina inicial, total de paginas en la b
-      this.paginaActual = result.current_page
-      this.totalPaginas = result.last_page
-      // parametros de visalizacion/paginacion
-      this.to = result.to
-      this.from = result.from
-      this.total = result.total
-      // cargar resulktados y mapear segun perfil
-      this.resultados =  this.mapearDatos(result.data)
-      this.cargandoDatos = false
-      // enviar usuario al top de la muestra de resultados para facilitar revision
-      this.goToTop()
     },
     mapearDatos (data) {
       return data.map(item => {
